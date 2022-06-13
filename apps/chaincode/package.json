@@ -1,0 +1,16 @@
+{
+  "name": "@app/chaincode",
+  "version": "0.0.1",
+  "main": "index.js",
+  "private": true,
+  "engines": {
+    "node": ">=12",
+    "npm": ">=5"
+  },
+  "dependencies": {
+    "fabric-contract-api": "^2.4.0",
+    "fabric-shim": "^2.4.0",
+    "json-stringify-deterministic": "^1.0.1",
+    "sort-keys-recursive": "^2.1.2"
+  }
+}
