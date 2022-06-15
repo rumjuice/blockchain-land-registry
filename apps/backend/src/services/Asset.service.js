@@ -1,40 +1,84 @@
+import {
+  evaluateTransaction,
+  submitTransaction,
+} from "./Hyperledger.service.js";
+
 /**
  * Get all accounts.
  *
  * @returns
  */
-function get() {
-  return true;
+async function get() {
+  const assets = await evaluateTransaction("GetAllAssets");
+  return assets;
 }
 
 /**
- * Add acc balance.
+ * Create new asset.
  *
- * @param address
+ * @param name
  * @returns
  */
 async function create() {
-  return true;
+  try {
+    // TODO change with params from frontend
+    await submitTransaction(
+      "CreateAsset",
+      "asset13",
+      "yellow",
+      "5",
+      "Tom",
+      "1300",
+    );
+    const result = await contract.evaluateTransaction("ReadAsset", "asset13");
+
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 /**
- * Add acc balance.
+ * Update asset.
  *
- * @param address
+ * @param name
  * @returns
  */
 async function update() {
-  return true;
+  try {
+    // TODO change with params from frontend
+    await submitTransaction(
+      "UpdateAsset",
+      "asset13",
+      "yellow",
+      "5",
+      "Tom",
+      "1300",
+    );
+    const result = await contract.evaluateTransaction("ReadAsset", "asset13");
+
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 /**
- * Add acc balance.
+ * Transfer asset.
  *
- * @param address
+ * @param name
  * @returns
  */
 async function transfer() {
-  return true;
+  try {
+    // TODO change with params from frontend
+    await submitTransaction("TransferAsset", "asset13", "Thomas");
+    const result = await contract.evaluateTransaction("ReadAsset", "asset13");
+
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 export default {
