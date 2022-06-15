@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 import StatusCodes from "http-status-codes";
 import routes from "./routes/index.js";
+import { init } from "./services/Hyperledger.service.js";
 
 // Initialize express
 const app = express();
@@ -24,5 +25,8 @@ app.use((err, _, res, __) => {
     error: err.message,
   });
 });
+
+// Initialize fabric
+await init();
 
 export default app;
