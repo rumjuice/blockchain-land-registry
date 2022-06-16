@@ -20,7 +20,13 @@ Land registration system using Hyperledger Fabric
 
 ## Requirements
 
+## Architecture Diagram
+
+![](assets/architecture-diagram.jpg)
+
 ## State Machine Diagram
+
+![](assets/state-diagram.jpg)
 
 ## Transition Descriptions
 
