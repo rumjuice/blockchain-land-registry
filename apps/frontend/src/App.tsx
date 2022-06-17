@@ -10,12 +10,14 @@ function App(): ReactElement {
       <header className="w-full text-center py-4 text-2xl italic font-bold text-rose-900 border-b-rose-900 border-b-2">
         Blockchain Land Registration System
       </header>
-      <Routes>
-        {routes.map((route) => (
-          <Route key={route.path} path={route.path} element={route.element} />
-        ))}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <section className="flex flex-col items-center lg:w-3/5 md:w-3/4 w-full">
+        <Routes>
+          {routes.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </section>
     </div>
   );
 }
