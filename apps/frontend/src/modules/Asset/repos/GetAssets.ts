@@ -7,7 +7,7 @@ import { Asset } from "../Types";
  * @returns assets
  */
 async function getAssets(): Promise<Asset[]> {
-  return await ky.get(`localhost:8080/assets`).json();
+  return await ky.get(`http://localhost:8080/assets`).json();
 }
 
 export default getAssets;

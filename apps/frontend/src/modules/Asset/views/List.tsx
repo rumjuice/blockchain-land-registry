@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useState } from "react";
-import { Card } from "../components";
+import { Card, CreateAsset } from "../components";
 import { getAssets } from "../repos";
 import { Asset } from "../Types";
 
@@ -30,6 +30,7 @@ const List: FC = () => {
   ];
 
   const [assets, setAssets] = useState<Asset[]>(mock);
+  const [createModal, setCreateModal] = useState<boolean>(false);
 
   useEffect(() => {
     fetchData();
@@ -44,8 +45,22 @@ const List: FC = () => {
     }
   }, []);
 
+  const onCreateClose = useCallback(() => {
+    setCreateModal(false);
+  }, []);
+
+  const onCreateAsset = useCallback((a: Asset) => {
+    console.log(a);
+    onCreateClose();
+  }, []);
+
   return (
     <div className="flex w-full h-full mt-8 gap-4">
+      <CreateAsset
+        onClose={onCreateClose}
+        show={createModal}
+        onSubmit={onCreateAsset}
+      />
       <section className="flex-initial">
         <iframe
           className="h-full xl:min-w-[30rem] lg:min-w-[25rem] md:min-w-[20rem]"
@@ -63,7 +78,10 @@ const List: FC = () => {
           <h2 className="text-lg text-center font-medium text-emerald-900">
             Asset List
           </h2>
-          <button className="ml-auto max-w-fit inline-flex justify-center px-4 py-1 text-sm font-medium text-emerald-900 bg-emerald-100 border border-transparent rounded-md hover:bg-emerald-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500">
+          <button
+            className="ml-auto max-w-fit inline-flex justify-center px-4 py-1 text-sm font-medium text-emerald-900 bg-emerald-100 border border-transparent rounded-md hover:bg-emerald-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500"
+            onClick={() => setCreateModal(true)}
+          >
             Create Asset
           </button>
         </div>

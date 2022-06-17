@@ -20,7 +20,7 @@ const Card: FC<Asset> = ({ id, owner, area, location, status }) => {
       </div>
       {status === AssetStatus.REGISTERED && (
         <div className="ml-auto">
-          <button className="max-w-fit inline-flex justify-center px-4 py-1 text-sm font-medium text-slate-100 bg-emerald-900 border border-transparent rounded-md hover:bg-emerald-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500">
+          <button className="max-w-fit inline-flex justify-center px-4 py-1 text-sm font-medium text-white bg-emerald-700 border border-transparent rounded-md hover:bg-emerald-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500">
             Transfer
           </button>
         </div>
