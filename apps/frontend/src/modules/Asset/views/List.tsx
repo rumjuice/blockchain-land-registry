@@ -1,8 +1,11 @@
-import { FC } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Card } from "../components";
+import { getAssets } from "../repos";
+import { Asset } from "../Types";
 
 const List: FC = () => {
-  const assets = [
+  // TODO replace mock data with actual data from api
+  const mock = [
     {
       id: "Asset1",
       area: 1500,
@@ -25,6 +28,21 @@ const List: FC = () => {
       status: "Locked",
     },
   ];
+
+  const [assets, setAssets] = useState<Asset[]>(mock);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const data = await getAssets();
+      setAssets(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   return (
     <div className="flex w-full h-full mt-8 gap-4">
