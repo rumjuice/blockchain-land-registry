@@ -36,7 +36,6 @@ The system should allow locking mechanism of the real estate property by the gov
 ## State Machine Diagram
 
 ![](assets/state-diagram.jpg)
-TODO: fix the diagram, only govt can register property
 
 We named real estate property as 'asset' objects within the system. This diagram shows all possible states of asset.
 
