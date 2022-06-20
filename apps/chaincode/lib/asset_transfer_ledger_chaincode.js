@@ -84,6 +84,29 @@ class Chaincode extends Contract {
 		//  Delete index entry to state.
 		await ctx.stub.deleteState(ownerIdIndexKey);
 	}
+	
+	
+	// *** TransferAsset transfers a asset by setting a new owner name on the asset ***
+	async TransferAsset(ctx, assetId, newOwner) {
+
+		let assetAsBytes = await ctx.stub.getState(assetId);
+		if (!assetAsBytes || !assetAsBytes.toString()) {
+			throw new Error(`Asset ${assetId} does not exist`);
+		}
+		let assetToTransfer = {};
+		try {
+			assetToTransfer = JSON.parse(assetAsBytes.toString()); //unmarshal
+		} catch (err) {
+			let jsonResp = {};
+			jsonResp.error = 'Failed to decode JSON of: ' + assetId;
+			throw new Error(jsonResp);
+		}
+		assetToTransfer.owner = newOwner; //change the owner
+
+		let assetJSONasBytes = Buffer.from(JSON.stringify(assetToTransfer));
+		await ctx.stub.putState(assetId, assetJSONasBytes); //rewrite the asset
+	}
+
 
 	
 }
