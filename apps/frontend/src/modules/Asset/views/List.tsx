@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useState } from "react";
-import { Card, CreateAsset } from "../components";
+import { Card, CreateAssetModal, TransferModal } from "../components";
 import { getAssets } from "../repos";
-import { Asset } from "../Types";
+import { Asset, Transfer } from "../Types";
 
 const List: FC = () => {
   // TODO replace mock data with actual data from api
@@ -31,6 +31,7 @@ const List: FC = () => {
 
   const [assets, setAssets] = useState<Asset[]>(mock);
   const [createModal, setCreateModal] = useState<boolean>(false);
+  const [transferModal, setTransferModal] = useState<string>();
 
   useEffect(() => {
     fetchData();
@@ -49,17 +50,35 @@ const List: FC = () => {
     setCreateModal(false);
   }, []);
 
-  const onCreateAsset = useCallback((a: Asset) => {
-    console.log(a);
+  const onCreateAsset = useCallback(async (a: Asset) => {
+    try {
+      // const data = await createAsset();
+    } catch (error) {
+      console.error(error);
+    }
     onCreateClose();
+  }, []);
+
+  const onTransferClose = useCallback(() => {
+    setTransferModal(undefined);
+  }, []);
+
+  const onTransferAsset = useCallback((a: Transfer) => {
+    console.log(a);
+    onTransferClose();
   }, []);
 
   return (
     <div className="flex w-full h-full mt-8 gap-4">
-      <CreateAsset
+      <CreateAssetModal
         onClose={onCreateClose}
         show={createModal}
         onSubmit={onCreateAsset}
+      />
+      <TransferModal
+        onClose={onTransferClose}
+        show={transferModal}
+        onSubmit={onTransferAsset}
       />
       <section className="flex-initial">
         <iframe
@@ -88,7 +107,11 @@ const List: FC = () => {
 
         <div className="flex flex-col gap-4">
           {assets.map((asset) => (
-            <Card key={asset.id} {...asset} />
+            <Card
+              key={asset.id}
+              {...asset}
+              onClick={() => setTransferModal(asset.id)}
+            />
           ))}
         </div>
       </section>

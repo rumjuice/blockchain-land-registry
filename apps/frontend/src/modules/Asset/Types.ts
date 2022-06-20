@@ -10,3 +10,7 @@ export type Asset = {
   owner: string;
   status: AssetStatus | string;
 };
+export type Transfer = {
+  id: string;
+  owner: string;
+};

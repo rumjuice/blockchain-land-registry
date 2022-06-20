@@ -1,9 +1,11 @@
 import { ReactElement } from "react";
+import ReactModal from "react-modal";
 import { Navigate, Route, RouteObject, Routes } from "react-router-dom";
 import AssetRoutes from "./modules/Asset/Route";
 
 function App(): ReactElement {
   const routes: RouteObject[] = [...AssetRoutes];
+  ReactModal.setAppElement("#root");
 
   return (
     <div className="flex flex-col items-center h-screen w-screen overflow-auto bg-slate-50 pb-4">

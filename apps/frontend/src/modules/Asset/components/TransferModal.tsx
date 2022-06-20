@@ -1,28 +1,23 @@
 import { useFormik } from "formik";
 import { FC } from "react";
 import ReactModal from "react-modal";
-import { Asset, AssetStatus } from "../Types";
+import { Transfer } from "../Types";
 import Input from "./Input";
 
 interface Props {
-  show: boolean;
+  show?: string;
   onClose(): void;
-  onSubmit(formData: Asset): void;
+  onSubmit(formData: Transfer): void;
 }
 
-const CreateAsset: FC<Props> = ({ show, onClose, onSubmit }) => {
-  ReactModal.setAppElement("body");
-
+const TransferModal: FC<Props> = ({ show, onClose, onSubmit }) => {
   const formik = useFormik({
     initialValues: {
-      id: "",
-      area: 0,
-      location: "",
+      id: show,
       owner: "",
-      status: AssetStatus.REGISTERED,
     },
     onSubmit: (values, { resetForm }) => {
-      onSubmit(values);
+      onSubmit(values as Transfer);
       resetForm();
     },
     validateOnChange: true,
@@ -31,7 +26,7 @@ const CreateAsset: FC<Props> = ({ show, onClose, onSubmit }) => {
 
   return (
     <ReactModal
-      isOpen={show}
+      isOpen={!!show}
       className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full flex items-center justify-center"
       contentLabel="Create Asset"
       ariaHideApp={false}
@@ -40,7 +35,7 @@ const CreateAsset: FC<Props> = ({ show, onClose, onSubmit }) => {
         <div className="relative bg-white rounded-lg shadow">
           <div className="flex justify-between items-start py-4 px-6 rounded-t border-b dark:border-slate-600">
             <h3 className="text-xl font-semibold text-slate-900">
-              Create New Asset
+              Transfer Asset
             </h3>
             <button
               type="button"
@@ -64,27 +59,9 @@ const CreateAsset: FC<Props> = ({ show, onClose, onSubmit }) => {
           </div>
           <div className="py-4 px-6 text-sm flex flex-col gap-4">
             <Input
-              name="id"
-              placeholder="Input asset id"
-              value={formik.values.id}
-              onChange={formik.handleChange}
-            />
-            <Input
-              name="location"
-              placeholder="Input asset location"
-              value={formik.values.location}
-              onChange={formik.handleChange}
-            />
-            <Input
               name="owner"
-              placeholder="Input owner"
+              placeholder="Input new owner"
               value={formik.values.owner}
-              onChange={formik.handleChange}
-            />
-            <Input
-              name="area"
-              placeholder="Input area in m2"
-              value={formik.values.area}
               onChange={formik.handleChange}
             />
           </div>
@@ -95,7 +72,7 @@ const CreateAsset: FC<Props> = ({ show, onClose, onSubmit }) => {
               className="text-white bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               onClick={() => formik.handleSubmit()}
             >
-              Create
+              Transfer
             </button>
             <button
               data-modal-toggle="defaultModal"
@@ -112,4 +89,4 @@ const CreateAsset: FC<Props> = ({ show, onClose, onSubmit }) => {
   );
 };
 
-export default CreateAsset;
+export default TransferModal;

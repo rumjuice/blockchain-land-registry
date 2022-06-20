@@ -1,7 +1,8 @@
 import Card from "./Card";
-import CreateAsset from "./CreateAsset";
+import CreateAssetModal from "./CreateAssetModal";
 import HomeIcon from "./HomeIcon";
 import Input from "./Input";
 import Status from "./Status";
+import TransferModal from "./TransferModal";
 
-export { HomeIcon, Status, Card, CreateAsset, Input };
+export { HomeIcon, Status, Card, CreateAssetModal, Input, TransferModal };
