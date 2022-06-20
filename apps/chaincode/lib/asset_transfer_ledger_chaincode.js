@@ -108,6 +108,22 @@ class Chaincode extends Contract {
 	}
 
 
+	// *** GetAssetsByRange performs a range query based on the start and end keys provided ***
+	// Read-only function results are not typically submitted to ordering. If the read-only
+	// results are submitted to ordering, or if the query is used in an update transaction
+	// and submitted to ordering, then the committing peers will re-execute to guarantee that
+	// result sets are stable between endorsement time and commit time. The transaction is
+	// invalidated by the committing peers if the result set has changed between endorsement
+	// time and commit time.
+	// Therefore, range queries are a safe option for performing update transactions based on query results.
+	async GetAssetsByRange(ctx, startKey, endKey) {
+
+		let resultsIterator = await ctx.stub.getStateByRange(startKey, endKey);
+		let results = await this.GetAllResults(resultsIterator, false);
+
+		return JSON.stringify(results);
+	}
+
 	
 }
 
