@@ -1,10 +1,8 @@
 import { ReactElement } from "react";
 import ReactModal from "react-modal";
-import { Navigate, Route, RouteObject, Routes } from "react-router-dom";
-import AssetRoutes from "./modules/Asset/Route";
+import List from "./modules/Asset/views/List";
 
 function App(): ReactElement {
-  const routes: RouteObject[] = [...AssetRoutes];
   ReactModal.setAppElement("#root");
 
   return (
@@ -13,12 +11,7 @@ function App(): ReactElement {
         Blockchain Land Registration System
       </header>
       <section className="flex flex-col items-center lg:w-3/5 md:w-3/4 w-full h-full">
-        <Routes>
-          {routes.map((route) => (
-            <Route key={route.path} path={route.path} element={route.element} />
-          ))}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <List />
       </section>
     </div>
   );
