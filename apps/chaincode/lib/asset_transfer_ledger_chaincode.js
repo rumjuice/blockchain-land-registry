@@ -27,12 +27,12 @@ class Chaincode extends Contract {
 
 		// === Save asset to state ===
 		await ctx.stub.putState(assetID, Buffer.from(JSON.stringify(asset)));
-		let indexName = 'owner~id';
-		let ownerIdIndexKey = await ctx.stub.createCompositeKey(indexName, [asset.owner, asset.assetID]);
+		let indexName = 'status~id';
+		let statusIdIndexKey = await ctx.stub.createCompositeKey(indexName, [asset.status, asset.assetID]);
 
-		//  Save index entry to state. Only the key name is needed, no need to store a duplicate copy of the land.
+		//  Save index entry to state. Only the key name is needed, no need to store a duplicate copy of the land asset.
 		//  Note - passing a 'nil' value will effectively delete the key from state, therefore we pass null character as value
-		await ctx.stub.putState(ownerIdIndexKey, Buffer.from('\u0000'));
+		await ctx.stub.putState(statusIdIndexKey, Buffer.from('\u0000'));
 	}
 
 	
@@ -58,7 +58,7 @@ class Chaincode extends Contract {
 			throw new Error(`Asset ${id} does not exist`);
 		}
 
-		// to maintain the owner~id index, we need to read the asset first and get its owner
+		// to maintain the status~id index, we need to read the asset first and get its status
 		let valAsbytes = await ctx.stub.getState(id); // get the asset from chaincode state
 		let jsonResp = {};
 		if (!valAsbytes) {
@@ -76,13 +76,13 @@ class Chaincode extends Contract {
 		await ctx.stub.deleteState(id); //remove the asset from chaincode state
 
 		// delete the index
-		let indexName = 'owner~id';
-		let ownerIdIndexKey = ctx.stub.createCompositeKey(indexName, [assetJSON.owner, assetJSON.assetID]);
-		if (!ownerIdIndexKey) {
+		let indexName = 'status~id';
+		let statusIdIndexKey = ctx.stub.createCompositeKey(indexName, [assetJSON.status, assetJSON.assetID]);
+		if (!statusIdIndexKey) {
 			throw new Error(' Failed to create the createCompositeKey');
 		}
 		//  Delete index entry to state.
-		await ctx.stub.deleteState(ownerIdIndexKey);
+		await ctx.stub.deleteState(statusIdIndexKey);
 	}
 	
 	
