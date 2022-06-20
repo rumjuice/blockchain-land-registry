@@ -1,4 +1,5 @@
+import createAsset from "./CreateAsset";
 import getAssets from "./GetAssets";
-// import sendMoney from './SendMoney';
+import transferAsset from "./TransferAsset";
 
-export { getAssets };
+export { getAssets, createAsset, transferAsset };

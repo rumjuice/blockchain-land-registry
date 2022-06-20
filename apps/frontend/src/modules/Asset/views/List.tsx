@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { Card, CreateAssetModal, TransferModal } from "../components";
-import { getAssets } from "../repos";
+import { createAsset, getAssets, transferAsset } from "../repos";
 import { Asset, Transfer } from "../Types";
 
 const List: FC = () => {
@@ -50,9 +50,9 @@ const List: FC = () => {
     setCreateModal(false);
   }, []);
 
-  const onCreateAsset = useCallback(async (a: Asset) => {
+  const onCreateAsset = useCallback(async (data: Asset) => {
     try {
-      // const data = await createAsset();
+      await createAsset(data);
     } catch (error) {
       console.error(error);
     }
@@ -63,8 +63,12 @@ const List: FC = () => {
     setTransferModal(undefined);
   }, []);
 
-  const onTransferAsset = useCallback((a: Transfer) => {
-    console.log(a);
+  const onTransferAsset = useCallback(async (data: Transfer) => {
+    try {
+      await transferAsset(data);
+    } catch (error) {
+      console.error(error);
+    }
     onTransferClose();
   }, []);
 
