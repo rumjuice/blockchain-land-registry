@@ -9,7 +9,7 @@ const {Contract} = require('fabric-contract-api');
 class Chaincode extends Contract {
 
 	// *** CreateAsset - create a new asset, store into chaincode state ***
-	async CreateAsset(ctx, assetID, area, location, size, owner, status) {
+	async CreateAsset(ctx, assetID, area, location, owner, status, lock) {
 		const exists = await this.AssetExists(ctx, assetID);
 		if (exists) {
 			throw new Error(`The asset ${assetID} already exists`);
@@ -22,7 +22,8 @@ class Chaincode extends Contract {
 			area: area,
 			location: location,
 			owner: owner,
-			status: status
+			status: status,
+			lock: lock
 		};
 
 		// === Save asset to state ===
@@ -103,6 +104,50 @@ class Chaincode extends Contract {
 		}
 		assetToTransfer.owner = newOwner; //change the owner
 
+		let assetJSONasBytes = Buffer.from(JSON.stringify(assetToTransfer));
+		await ctx.stub.putState(assetId, assetJSONasBytes); //rewrite the asset
+	}
+	
+	
+	// *** HoldAsset locks an asset by setting the lock property to "TRUE" ***
+	async HoldAsset(ctx, assetId) {
+
+		let assetAsBytes = await ctx.stub.getState(assetId);
+		if (!assetAsBytes || !assetAsBytes.toString()) {
+			throw new Error(`Asset ${assetId} does not exist`);
+		}
+		let assetToTransfer = {};
+		try {
+			assetToTransfer = JSON.parse(assetAsBytes.toString()); //unmarshal
+		} catch (err) {
+			let jsonResp = {};
+			jsonResp.error = 'Failed to decode JSON of: ' + assetId;
+			throw new Error(jsonResp);
+		}
+		assetToTransfer.lock = true; //Hold (lock) the asset
+
+		let assetJSONasBytes = Buffer.from(JSON.stringify(assetToTransfer));
+		await ctx.stub.putState(assetId, assetJSONasBytes); //rewrite the asset
+	}
+	
+	
+	// UnHoldAsset unlocks an asset by setting the lock property to "FALSE".
+	async UnHoldAsset(ctx, assetId) {
+
+		let assetAsBytes = await ctx.stub.getState(assetId);
+		if (!assetAsBytes || !assetAsBytes.toString()) {
+			throw new Error(`Asset ${assetId} does not exist`);
+		}
+		let assetToTransfer = {};
+		try {
+			assetToTransfer = JSON.parse(assetAsBytes.toString()); //unmarshal
+		} catch (err) {
+			let jsonResp = {};
+			jsonResp.error = 'Failed to decode JSON of: ' + assetId;
+			throw new Error(jsonResp);
+		}
+		assetToTransfer.lock = false; //Unhold (unlock) the asset
+	
 		let assetJSONasBytes = Buffer.from(JSON.stringify(assetToTransfer));
 		await ctx.stub.putState(assetId, assetJSONasBytes); //rewrite the asset
 	}
