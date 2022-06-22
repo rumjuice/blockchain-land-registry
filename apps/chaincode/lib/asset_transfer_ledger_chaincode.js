@@ -168,7 +168,110 @@ class Chaincode extends Contract {
 
 		return JSON.stringify(results);
 	}
+	
+	
+	// *** QueryAssetsByOwner queries for assets based on a passed in owner ***
+	// Only available on state databases that support rich query (e.g. CouchDB)
+	async QueryAssetsByOwner(ctx, owner) {
+		let queryString = {};
+		queryString.selector = {};
+		queryString.selector.docType = 'asset';
+		queryString.selector.owner = owner;
+		return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
+	}
+	
+	
+	// *** QueryAssets uses a query string to perform a query for assets ***
+	// Query string matching state database syntax is passed in and executed as is.
+	// Supports ad hoc queries that can be defined at runtime by the client.
+	// Only available on state databases that support rich query (e.g. CouchDB)
+	async QueryAssets(ctx, queryString) {
+		return await this.GetQueryResultForQueryString(ctx, queryString);
+	}
+	
+	
+	// *** GetQueryResultForQueryString executes the passed in query string ***
+	// Result set is built and returned as a byte array containing the JSON results.
+	async GetQueryResultForQueryString(ctx, queryString) {
 
+		let resultsIterator = await ctx.stub.getQueryResult(queryString);
+		let results = await this.GetAllResults(resultsIterator, false);
+
+		return JSON.stringify(results);
+	}
+
+	
+	// *** QueryAssetsWithPagination uses a query string, page size and a bookmark to perform a query for assets ***
+	// Query string matching state database syntax is passed in and executed as is.
+	// The number of fetched records would be equal to or lesser than the specified page size.
+	// Supports ad hoc queries that can be defined at runtime by the client.
+	// Only available on state databases that support rich query (e.g. CouchDB)
+	// Paginated queries are only valid for read only transactions.
+	async QueryAssetsWithPagination(ctx, queryString, pageSize, bookmark) {
+
+		const { iterator, metadata } = await ctx.stub.getQueryResultWithPagination(queryString, pageSize, bookmark);
+		const results = await this.GetAllResults(iterator, false);
+
+		results.ResponseMetadata = {
+			RecordsCount: metadata.fetched_records_count,
+			Bookmark: metadata.bookmark,
+		};
+
+		return JSON.stringify(results);
+	}
+	
+	
+	// *** GetAssetHistory returns the chain of custody for an asset since issuance ***
+	async GetAssetHistory(ctx, assetID) {
+
+		let resultsIterator = await ctx.stub.getHistoryForKey(assetID);
+		let results = await this.GetAllResults(resultsIterator, true);
+
+		return JSON.stringify(results);
+	}
+	
+	
+	// *** AssetExists returns true when asset with given ID exists in world state ***
+	async AssetExists(ctx, assetID) {
+		// ==== Check if asset already exists ====
+		let assetState = await ctx.stub.getState(assetID);
+		return assetState && assetState.length > 0;
+	}
+	
+	
+	// *** GetAllResults ***
+	async GetAllResults(iterator, isHistory) {
+		let allResults = [];
+		let res = await iterator.next();
+		while (!res.done) {
+			if (res.value && res.value.value.toString()) {
+				let jsonRes = {};
+				console.log(res.value.value.toString('utf8'));
+				if (isHistory && isHistory === true) {
+					jsonRes.TxId = res.value.tx_id;
+					jsonRes.Timestamp = res.value.timestamp;
+					try {
+						jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
+					} catch (err) {
+						console.log(err);
+						jsonRes.Value = res.value.value.toString('utf8');
+					}
+				} else {
+					jsonRes.Key = res.value.key;
+					try {
+						jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+					} catch (err) {
+						console.log(err);
+						jsonRes.Record = res.value.value.toString('utf8');
+					}
+				}
+				allResults.push(jsonRes);
+			}
+			res = await iterator.next();
+		}
+		iterator.close();
+		return allResults;
+	}
 	
 }
 
