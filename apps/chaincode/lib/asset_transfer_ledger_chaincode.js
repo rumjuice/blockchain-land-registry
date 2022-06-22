@@ -110,46 +110,46 @@ class Chaincode extends Contract {
 	
 	
 	// *** HoldAsset locks an asset by setting the lock property to "TRUE" ***
-	async HoldAsset(ctx, assetId) {
+	async HoldAsset(ctx, assetID) {
 
-		let assetAsBytes = await ctx.stub.getState(assetId);
+		let assetAsBytes = await ctx.stub.getState(assetID);
 		if (!assetAsBytes || !assetAsBytes.toString()) {
-			throw new Error(`Asset ${assetId} does not exist`);
+			throw new Error(`Asset ${assetID} does not exist`);
 		}
 		let assetToTransfer = {};
 		try {
 			assetToTransfer = JSON.parse(assetAsBytes.toString()); //unmarshal
 		} catch (err) {
 			let jsonResp = {};
-			jsonResp.error = 'Failed to decode JSON of: ' + assetId;
+			jsonResp.error = 'Failed to decode JSON of: ' + assetID;
 			throw new Error(jsonResp);
 		}
 		assetToTransfer.lock = true; //Hold (lock) the asset
 
 		let assetJSONasBytes = Buffer.from(JSON.stringify(assetToTransfer));
-		await ctx.stub.putState(assetId, assetJSONasBytes); //rewrite the asset
+		await ctx.stub.putState(assetID, assetJSONasBytes); //rewrite the asset
 	}
 	
 	
-	// UnHoldAsset unlocks an asset by setting the lock property to "FALSE".
-	async UnHoldAsset(ctx, assetId) {
+	// *** UnHoldAsset unlocks an asset by setting the lock property to "FALSE" ***
+	async UnHoldAsset(ctx, assetID) {
 
-		let assetAsBytes = await ctx.stub.getState(assetId);
+		let assetAsBytes = await ctx.stub.getState(assetID);
 		if (!assetAsBytes || !assetAsBytes.toString()) {
-			throw new Error(`Asset ${assetId} does not exist`);
+			throw new Error(`Asset ${assetID} does not exist`);
 		}
 		let assetToTransfer = {};
 		try {
 			assetToTransfer = JSON.parse(assetAsBytes.toString()); //unmarshal
 		} catch (err) {
 			let jsonResp = {};
-			jsonResp.error = 'Failed to decode JSON of: ' + assetId;
+			jsonResp.error = 'Failed to decode JSON of: ' + assetID;
 			throw new Error(jsonResp);
 		}
 		assetToTransfer.lock = false; //Unhold (unlock) the asset
 	
 		let assetJSONasBytes = Buffer.from(JSON.stringify(assetToTransfer));
-		await ctx.stub.putState(assetId, assetJSONasBytes); //rewrite the asset
+		await ctx.stub.putState(assetID, assetJSONasBytes); //rewrite the asset
 	}
 
 
