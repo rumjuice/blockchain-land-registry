@@ -1,16 +1,19 @@
 {
-  "name": "@app/chaincode",
-  "version": "0.0.1",
-  "main": "index.js",
-  "private": true,
-  "engines": {
-    "node": ">=12",
-    "npm": ">=5"
-  },
-  "dependencies": {
-    "fabric-contract-api": "^2.4.0",
-    "fabric-shim": "^2.4.0",
-    "json-stringify-deterministic": "^1.0.1",
-    "sort-keys-recursive": "^2.1.2"
-  }
+	"name": "@app/chaincode",
+	"version": "1.0.1",
+	"description": "asset chaincode - Hyperledger Fabric - Land Registry project",
+	"main": "index.js",
+	"engines": {
+		"node": ">=12",
+		"npm": ">=5.3.0"
+	},
+	"scripts": {
+		"start": "fabric-chaincode-node start"
+	},
+	"engine-strict": true,
+	"license": "Apache-2.0",
+	"dependencies": {
+		"fabric-contract-api": "^2.0.0",
+		"fabric-shim": "^2.0.0"
+	}
 }
