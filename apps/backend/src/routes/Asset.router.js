@@ -14,6 +14,14 @@ const path = {
 };
 
 /**
+ * Get single asset by id.
+ */
+router.get(path.asset, async (req, res) => {
+  const assets = await AssetService.getById(req.params.assetId);
+  return res.status(OK).json(assets);
+});
+
+/**
  * Get all assets.
  */
 router.get(path.assets, async (_, res) => {
@@ -24,7 +32,7 @@ router.get(path.assets, async (_, res) => {
 /**
  * Create asset.
  */
-router.post(path.asset, async (req, res) => {
+router.post(path.assets, async (req, res) => {
   try {
     const asset = await AssetService.create(req.body);
     return res.status(CREATED).json(asset);
@@ -46,5 +54,7 @@ router.put(path.asset, async (req, res) => {
   }
   return res.status(BAD_REQUEST).json("Asset id is missing");
 });
+
+
 
 export default router;
