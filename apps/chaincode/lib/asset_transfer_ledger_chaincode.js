@@ -9,7 +9,7 @@ const {Contract} = require('fabric-contract-api');
 class Chaincode extends Contract {
 
 	// *** CreateAsset - create a new asset, store into chaincode state ***
-	async CreateAsset(ctx, assetID, area, location, owner, status, lock) {
+	async CreateAsset(ctx, assetID, area, location, owner, status) {
 		const exists = await this.AssetExists(ctx, assetID);
 		if (exists) {
 			throw new Error(`The asset ${assetID} already exists`);
@@ -22,8 +22,7 @@ class Chaincode extends Contract {
 			area: area,
 			location: location,
 			owner: owner,
-			status: status,
-			lock: lock
+			status: status
 		};
 
 		// === Save asset to state ===
@@ -46,6 +45,28 @@ class Chaincode extends Contract {
 
 		return assetJSON.toString();
 	}
+	
+	
+	// *** GetAllAssets returns all assets found in the world state ***
+    	async GetAllAssets(ctx) {
+        	const allResults = [];
+        	// range query with empty string for startKey and endKey does an open-ended query of all assets in the chaincode namespace.
+        	const iterator = await ctx.stub.getStateByRange('', '');
+        	let result = await iterator.next();
+        	while (!result.done) {
+            	const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            	let record;
+            	try {
+                	record = JSON.parse(strValue);
+            	} catch (err) {
+                	console.log(err);
+                	record = strValue;
+            	}
+            	allResults.push({ Key: result.value.key, Record: record });
+            	result = await iterator.next();
+        	}
+        	return JSON.stringify(allResults);
+    	}
 	
 	
 	// *** delete - remove a asset key/value pair from state ***
@@ -109,46 +130,46 @@ class Chaincode extends Contract {
 	}
 	
 	
-	// *** HoldAsset locks an asset by setting the lock property to "TRUE" ***
+	// *** HoldAsset holds an asset by setting the status property to "hold" ***
 	async HoldAsset(ctx, assetID) {
 
 		let assetAsBytes = await ctx.stub.getState(assetID);
 		if (!assetAsBytes || !assetAsBytes.toString()) {
 			throw new Error(`Asset ${assetID} does not exist`);
 		}
-		let assetToTransfer = {};
+		let assetToHold = {};
 		try {
-			assetToTransfer = JSON.parse(assetAsBytes.toString()); //unmarshal
+			assetToHold = JSON.parse(assetAsBytes.toString()); //unmarshal
 		} catch (err) {
 			let jsonResp = {};
 			jsonResp.error = 'Failed to decode JSON of: ' + assetID;
 			throw new Error(jsonResp);
 		}
-		assetToTransfer.lock = true; //Hold (lock) the asset
+		assetToTransfer.status = 'hold'; //Hold (lock) the asset
 
 		let assetJSONasBytes = Buffer.from(JSON.stringify(assetToTransfer));
 		await ctx.stub.putState(assetID, assetJSONasBytes); //rewrite the asset
 	}
 	
 	
-	// *** UnHoldAsset unlocks an asset by setting the lock property to "FALSE" ***
+	// *** UnHoldAsset unholds an asset by setting the status property to "registered" ***
 	async UnHoldAsset(ctx, assetID) {
 
 		let assetAsBytes = await ctx.stub.getState(assetID);
 		if (!assetAsBytes || !assetAsBytes.toString()) {
 			throw new Error(`Asset ${assetID} does not exist`);
 		}
-		let assetToTransfer = {};
+		let assetToUnhold = {};
 		try {
-			assetToTransfer = JSON.parse(assetAsBytes.toString()); //unmarshal
+			assetToUnhold = JSON.parse(assetAsBytes.toString()); //unmarshal
 		} catch (err) {
 			let jsonResp = {};
 			jsonResp.error = 'Failed to decode JSON of: ' + assetID;
 			throw new Error(jsonResp);
 		}
-		assetToTransfer.lock = false; //Unhold (unlock) the asset
+		assetToTransfer.status = 'registered'; //Unhold (unlock) the asset
 	
-		let assetJSONasBytes = Buffer.from(JSON.stringify(assetToTransfer));
+		let assetJSONasBytes = Buffer.from(JSON.stringify(assetToUnhold));
 		await ctx.stub.putState(assetID, assetJSONasBytes); //rewrite the asset
 	}
 
