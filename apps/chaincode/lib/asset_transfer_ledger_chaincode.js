@@ -152,7 +152,7 @@ class Chaincode extends Contract {
 	}
 	
 	
-	// *** UnHoldAsset unholds an asset by setting the status property to "register" ***
+	// *** UnHoldAsset unholds an asset by setting the status property to "registered" ***
 	async UnHoldAsset(ctx, assetID) {
 
 		let assetAsBytes = await ctx.stub.getState(assetID);
