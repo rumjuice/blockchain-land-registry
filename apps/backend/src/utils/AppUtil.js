@@ -15,9 +15,15 @@ const buildCCPOrg1 = () => {
   // load the common connection configuration file
   const ccpPath = path.resolve(
     __dirname,
-    "src",
-    "utils",
-    "connection-org1.json",
+    '..',
+    '..',
+    'apps',
+    'fabric-network',
+    'test-network',
+    'organizations',
+    'peerOrganizations',
+    'org1.example.com',
+    'connection-org1.json'
   );
   const fileExists = fs.existsSync(ccpPath);
   if (!fileExists) {
@@ -36,9 +42,15 @@ const buildCCPOrg2 = () => {
   // load the common connection configuration file
   const ccpPath = path.resolve(
     __dirname,
-    "src",
-    "utils",
-    "connection-org2.json",
+    '..',
+    '..',
+    'apps',
+    'fabric-network',
+    'test-network',
+    'organizations',
+    'peerOrganizations',
+    'org2.example.com',
+    'connection-org2.json'
   );
   const fileExists = fs.existsSync(ccpPath);
   if (!fileExists) {

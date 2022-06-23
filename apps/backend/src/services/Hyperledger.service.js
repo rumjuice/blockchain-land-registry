@@ -5,14 +5,14 @@ import { buildCCPOrg1, buildWallet } from "../utils/AppUtil.js";
 import {
   buildCAClient,
   enrollAdmin,
-  registerAndEnrollUser,
+  registerAndEnrollUser
 } from "../utils/CAUtil.js";
 
 // TODO change this constant
 const channelName = "mychannel";
 const chaincodeName = "basic";
 const mspOrg1 = "Org1MSP";
-const __dir = dirname("./");
+const __dir = dirname("../");
 const walletPath = path.join(__dir, "wallet");
 const org1UserId = "appUser";
 let contract;
@@ -22,6 +22,7 @@ let contract;
  *
  */
 async function init() {
+
   const ccp = buildCCPOrg1();
   const caClient = buildCAClient(FabricCAServices, ccp, "ca.org1.example.com");
 
@@ -51,10 +52,11 @@ async function init() {
     contract = network.getContract(chaincodeName);
 
     // TODO change function name based on actual chaincode
-    await submitTransaction("InitLedger");
+    // await submitTransaction("InitLedger");
 
     console.log("Fabric initialized successfully");
   } catch (error) {
+    console.log(error);
     throw new Error("Failed to initialize fabric", error);
   }
 }

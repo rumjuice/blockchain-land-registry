@@ -1,6 +1,6 @@
 import {
   evaluateTransaction,
-  submitTransaction,
+  submitTransaction
 } from "./Hyperledger.service.js";
 
 /**
@@ -9,8 +9,24 @@ import {
  * @returns
  */
 async function get() {
-  const assets = await evaluateTransaction("GetAllAssets");
-  return assets;
+  try {
+    const assets = await evaluateTransaction("GetAllAssets");
+    return assets;
+  }
+  catch (error) {
+    return "Assets not found";
+  }
+}
+
+async function getById(id) {
+  try {
+    const asset = await evaluateTransaction("ReadAsset", id);
+    return JSON.parse(asset)
+  }
+  catch (error) {
+    console.log(error)
+    return "Asset not found";
+  }
 }
 
 /**
@@ -19,22 +35,27 @@ async function get() {
  * @param name
  * @returns
  */
-async function create() {
+async function create(assetObject) {
   try {
     // TODO change with params from frontend
+    console.log(assetObject);
     await submitTransaction(
       "CreateAsset",
-      "asset13",
-      "yellow",
-      "5",
-      "Tom",
-      "1300",
+      [
+        assetObject.assetId,
+        assetObject.area,
+        assetObject.location,
+        assetObject.owner,
+        assetObject.status
+      ]
     );
-    const result = await contract.evaluateTransaction("ReadAsset", "asset13");
 
-    return result;
+    const result = await evaluateTransaction("ReadAsset", assetObject.assetId);
+
+    return JSON.parse(result);
   } catch (error) {
-    throw new Error(error);
+    console.log(error)
+    return error;
   }
 }
 
@@ -81,8 +102,13 @@ async function transfer() {
   }
 }
 
+function prettyJSONString(inputString) {
+  return JSON.stringify(JSON.parse(inputString), null, 2);
+}
+
 export default {
   get,
+  getById,
   create,
   update,
   transfer,
