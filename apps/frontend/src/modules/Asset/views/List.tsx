@@ -1,35 +1,10 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { Card, CreateAssetModal, TransferModal } from "../components";
 import { createAsset, getAssets, transferAsset } from "../repos";
-import { Asset, Transfer } from "../Types";
+import { Asset, GetAsset, Transfer } from "../Types";
 
 const List: FC = () => {
-  // TODO replace mock data with actual data from api
-  const mock = [
-    {
-      id: "Asset1",
-      area: 1500,
-      location: "1 Apple Parkway",
-      owner: "Jainam",
-      status: "Registered",
-    },
-    {
-      id: "Asset2",
-      area: 456,
-      location: "1 Hacker Way",
-      owner: "",
-      status: "Not Registered",
-    },
-    {
-      id: "Asset3",
-      area: 55,
-      location: "33 Bel Road",
-      owner: "Alex",
-      status: "Locked",
-    },
-  ];
-
-  const [assets, setAssets] = useState<Asset[]>(mock);
+  const [assets, setAssets] = useState<GetAsset[]>();
   const [createModal, setCreateModal] = useState<boolean>(false);
   const [transferModal, setTransferModal] = useState<string>();
 
@@ -42,7 +17,7 @@ const List: FC = () => {
       const data = await getAssets();
       setAssets(data);
     } catch (error) {
-      console.error(error);
+      alert(error);
     }
   }, []);
 
@@ -53,8 +28,9 @@ const List: FC = () => {
   const onCreateAsset = useCallback(async (data: Asset) => {
     try {
       await createAsset(data);
+      fetchData();
     } catch (error) {
-      console.error(error);
+      alert(error);
     }
     onCreateClose();
   }, []);
@@ -67,7 +43,7 @@ const List: FC = () => {
     try {
       await transferAsset(data);
     } catch (error) {
-      console.error(error);
+      alert(error);
     }
     onTransferClose();
   }, []);
@@ -110,13 +86,19 @@ const List: FC = () => {
         </div>
 
         <div className="flex flex-col gap-4">
-          {assets.map((asset) => (
-            <Card
-              key={asset.id}
-              {...asset}
-              onClick={() => setTransferModal(asset.id)}
-            />
-          ))}
+          {assets && assets.length > 0 ? (
+            assets.map((asset) => (
+              <Card
+                key={asset.Key}
+                {...asset.Record}
+                onClick={() => setTransferModal(asset.Key)}
+              />
+            ))
+          ) : (
+            <h2 className="p-4 mt-4">
+              No assets registered. Please create new asset.
+            </h2>
+          )}
         </div>
       </section>
     </div>

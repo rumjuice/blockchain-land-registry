@@ -3,7 +3,7 @@ import { Asset, AssetStatus } from "../Types";
 import Status from "./Status";
 
 const Card: FC<Asset & { onClick(): void }> = ({
-  id,
+  assetID,
   owner,
   area,
   location,
@@ -15,15 +15,13 @@ const Card: FC<Asset & { onClick(): void }> = ({
       <div className="w-1/5">
         <Status status={status as AssetStatus} />
       </div>
-      <div className="flex flex-col">
-        <span className="font-bold">{id}</span>
+      <div className="flex flex-col gap-0.5">
+        <span className="font-bold">{location}</span>
         <span className="font-medium text-sm text-slate-800">
           Owned by {owner}
         </span>
-        <div className="flex gap-3">
-          <span className="text-sm text-slate-500">{location}</span>
-          <span className="text-sm text-slate-500">{area} m2</span>
-        </div>
+        <span className="text-sm text-slate-500">{area} m2</span>
+        <span className="text-xs text-slate-500">{assetID}</span>
       </div>
       {status === AssetStatus.REGISTERED && (
         <div className="ml-auto">

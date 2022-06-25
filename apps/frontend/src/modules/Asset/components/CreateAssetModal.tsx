@@ -7,14 +7,13 @@ import Input from "./Input";
 interface Props {
   show: boolean;
   onClose(): void;
-  onSubmit(formData: Asset): void;
+  onSubmit(formData: Omit<Asset, "assetID">): void;
 }
 
 const CreateAssetModal: FC<Props> = ({ show, onClose, onSubmit }) => {
   const formik = useFormik({
     initialValues: {
-      id: "",
-      area: 0,
+      area: "",
       location: "",
       owner: "",
       status: AssetStatus.REGISTERED,
@@ -61,12 +60,6 @@ const CreateAssetModal: FC<Props> = ({ show, onClose, onSubmit }) => {
             </button>
           </div>
           <div className="py-4 px-6 text-sm flex flex-col gap-4">
-            <Input
-              name="id"
-              placeholder="Input asset id"
-              value={formik.values.id}
-              onChange={formik.handleChange}
-            />
             <Input
               name="location"
               placeholder="Input asset location"
