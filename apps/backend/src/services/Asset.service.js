@@ -1,60 +1,62 @@
+import { v4 as uuid } from "uuid";
 import {
   evaluateTransaction,
-  submitTransaction
+  submitTransaction,
 } from "./Hyperledger.service.js";
 
 /**
- * Get all accounts.
+ * Get all assets.
  *
  * @returns
  */
 async function get() {
   try {
     const assets = await evaluateTransaction("GetAllAssets");
-    return assets;
-  }
-  catch (error) {
-    return "Assets not found";
+    return JSON.parse(assets);
+  } catch (error) {
+    throw new Error(error);
   }
 }
 
+/**
+ * Get asset detail by id.
+ *
+ * @param id
+ * @returns
+ */
 async function getById(id) {
   try {
     const asset = await evaluateTransaction("ReadAsset", id);
-    return JSON.parse(asset)
-  }
-  catch (error) {
-    console.log(error)
-    return "Asset not found";
+    return JSON.parse(asset);
+  } catch (error) {
+    throw new Error(error);
   }
 }
 
 /**
  * Create new asset.
  *
- * @param name
+ * @param assetObject
  * @returns
  */
 async function create(assetObject) {
   try {
     // TODO change with params from frontend
-    console.log(assetObject);
-    await submitTransaction(
-      "CreateAsset",
-      [
-        assetObject.assetId,
-        assetObject.area,
-        assetObject.location,
-        assetObject.owner,
-        assetObject.status
-      ]
-    );
+    const id = uuid();
 
-    const result = await evaluateTransaction("ReadAsset", assetObject.assetId);
+    await submitTransaction("CreateAsset", [
+      id,
+      assetObject.area,
+      assetObject.location,
+      assetObject.owner,
+      assetObject.status,
+    ]);
+
+    const result = await evaluateTransaction("ReadAsset", id);
 
     return JSON.parse(result);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return error;
   }
 }

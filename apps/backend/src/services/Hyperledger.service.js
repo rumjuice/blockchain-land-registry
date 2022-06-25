@@ -5,16 +5,17 @@ import { buildCCPOrg1, buildWallet } from "../utils/AppUtil.js";
 import {
   buildCAClient,
   enrollAdmin,
-  registerAndEnrollUser
+  registerAndEnrollUser,
 } from "../utils/CAUtil.js";
 
-// TODO change this constant
 const channelName = "mychannel";
 const chaincodeName = "basic";
 const mspOrg1 = "Org1MSP";
 const __dir = dirname("../");
 const walletPath = path.join(__dir, "wallet");
 const org1UserId = "appUser";
+const org1Ca = "ca.org1.example.com";
+
 let contract;
 
 /**
@@ -22,13 +23,11 @@ let contract;
  *
  */
 async function init() {
-
   const ccp = buildCCPOrg1();
-  const caClient = buildCAClient(FabricCAServices, ccp, "ca.org1.example.com");
+  const caClient = buildCAClient(FabricCAServices, ccp, org1Ca);
 
   const wallet = await buildWallet(Wallets, walletPath);
 
-  // TODO update connection-org json on utils folder after deploying chaincode
   await enrollAdmin(caClient, wallet, mspOrg1);
   await registerAndEnrollUser(
     caClient,
@@ -44,17 +43,13 @@ async function init() {
     await gateway.connect(ccp, {
       wallet,
       identity: org1UserId,
-      //  TODO change to fabric endpoint
-      discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
+      discovery: { enabled: true, asLocalhost: true },
     });
 
     const network = await gateway.getNetwork(channelName);
     contract = network.getContract(chaincodeName);
 
-    // TODO change function name based on actual chaincode
-    // await submitTransaction("InitLedger");
-
-    console.log("Fabric initialized successfully");
+    console.log("Fabric initialized successfully!");
   } catch (error) {
     console.log(error);
     throw new Error("Failed to initialize fabric", error);
@@ -69,7 +64,9 @@ async function init() {
  * @returns
  */
 async function submitTransaction(name, params) {
-  return await contract.submitTransaction(name, ...params);
+  return (await params)
+    ? contract.submitTransaction(name, ...params)
+    : contract.submitTransaction(name);
 }
 
 /**
@@ -80,7 +77,9 @@ async function submitTransaction(name, params) {
  * @returns
  */
 async function evaluateTransaction(name, params) {
-  return await contract.evaluateTransaction(name, ...params);
+  return (await params)
+    ? contract.evaluateTransaction(name, params)
+    : contract.evaluateTransaction(name);
 }
 
 export { init, submitTransaction, evaluateTransaction };
