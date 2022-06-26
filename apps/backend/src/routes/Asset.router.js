@@ -11,6 +11,10 @@ const { OK, BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR, CREATED } =
 const path = {
   assets: "/assets",
   asset: "/assets/:assetId",
+  createAsset:"/create",
+  transfer:"/transfer",
+  hold:"/hold",
+  unhold:"/unhold"
 };
 
 /**
@@ -32,7 +36,7 @@ router.get(path.assets, async (_, res) => {
 /**
  * Create asset.
  */
-router.post(path.assets, async (req, res) => {
+router.post(path.createAsset, async (req, res) => {
   try {
     const asset = await AssetService.create(req.body);
     return res.status(CREATED).json(asset);
@@ -41,19 +45,45 @@ router.post(path.assets, async (req, res) => {
   }
 });
 
+
 /**
- * Update asset.
+ * Transfer
  */
-router.put(path.asset, async (req, res) => {
-  const assetId = req.params.assetId;
-  if (assetId) {
-    const asset = await AssetService.update(assetId);
-    return asset
-      ? res.status(OK).json(asset)
-      : res.status(NOT_FOUND).json("Asset not found");
-  }
-  return res.status(BAD_REQUEST).json("Asset id is missing");
+ router.post(path.transfer, async (req, res) => {
+  const assets = await AssetService.transfer(req.body);
+  return res.status(OK).json(assets);
 });
+
+
+/**
+ * Hold
+ */
+ router.post(path.hold, async (req, res) => {
+  const assets = await AssetService.transfer(req.body);
+  return res.status(OK).json(assets);
+});
+
+
+/**
+ * Unhold
+ */
+ router.post(path.unhold, async (req, res) => {
+  const assets = await AssetService.transfer(req.body);
+  return res.status(OK).json(assets);
+});
+// /**
+//  * Update asset.
+//  */
+// router.put(path.asset, async (req, res) => {
+//   const assetId = req.params.assetId;
+//   if (assetId) {
+//     const asset = await AssetService.update(assetId);
+//     return asset
+//       ? res.status(OK).json(asset)
+//       : res.status(NOT_FOUND).json("Asset not found");
+//   }
+//   return res.status(BAD_REQUEST).json("Asset id is missing");
+// });
 
 
 
