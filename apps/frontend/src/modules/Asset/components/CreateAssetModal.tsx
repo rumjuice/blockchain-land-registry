@@ -20,7 +20,7 @@ const CreateAssetModal: FC<Props> = ({ show, onClose, onSubmit }) => {
     },
     onSubmit: (values, { resetForm }) => {
       onSubmit(values);
-      resetForm();
+      setTimeout(() => resetForm(), 2000);
     },
     validateOnChange: true,
     enableReinitialize: true,

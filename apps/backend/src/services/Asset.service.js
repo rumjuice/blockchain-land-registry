@@ -67,15 +67,14 @@ async function create(assetObject) {
  */
 async function transfer(transferObject) {
   try {
-    // TODO change with params from frontend
-    await submitTransaction(
-      "TransferAsset",
+    await submitTransaction("TransferAsset", [
       transferObject.id,
       transferObject.owner,
-    );
-    const result = await contract.evaluateTransaction("ReadAsset", id);
+    ]);
 
-    return result;
+    const result = await evaluateTransaction("ReadAsset", transferObject.id);
+
+    return JSON.parse(result);
   } catch (error) {
     throw new Error(error);
   }
@@ -91,7 +90,7 @@ async function hold(holdData) {
   try {
     // TODO change with params from frontend
     await submitTransaction("HoldAsset", holdData.id);
-    const result = await contract.evaluateTransaction("ReadAsset", holdData.id);
+    const result = await evaluateTransaction("ReadAsset", holdData.id);
 
     return result;
   } catch (error) {
@@ -109,10 +108,7 @@ async function unhold(unholdData) {
   try {
     // TODO change with params from frontend
     await submitTransaction("UnHoldAsset", unholdData.id);
-    const result = await contract.evaluateTransaction(
-      "ReadAsset",
-      unholdData.id,
-    );
+    const result = await evaluateTransaction("ReadAsset", unholdData.id);
 
     return result;
   } catch (error) {

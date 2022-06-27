@@ -42,6 +42,7 @@ const List: FC = () => {
   const onTransferAsset = useCallback(async (data: Transfer) => {
     try {
       await transferAsset(data);
+      fetchData();
     } catch (error) {
       alert(await error.response.json());
     }

@@ -18,7 +18,7 @@ const TransferModal: FC<Props> = ({ show, onClose, onSubmit }) => {
     },
     onSubmit: (values, { resetForm }) => {
       onSubmit(values as Transfer);
-      resetForm();
+      setTimeout(() => resetForm(), 2000);
     },
     validateOnChange: true,
     enableReinitialize: true,

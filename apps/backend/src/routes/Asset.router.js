@@ -53,6 +53,9 @@ router.post(path.assets, async (req, res) => {
  * Transfer
  */
 router.post(path.transfer, async (req, res) => {
+  if (req.body.id === "" || req.body.owner === "")
+    return res.status(BAD_REQUEST).json("New owner is required!");
+
   try {
     const tx = await AssetService.transfer(req.body);
     return res.status(OK).json(tx);
