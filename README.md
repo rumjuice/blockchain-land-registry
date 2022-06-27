@@ -82,8 +82,7 @@ Owner - can transfer assets (that belong to them) to another owner.
 9. From project root folder run following to start backend application at port 8080:  
    `yarn backend start`
 10. From project root folder run following to start backend application at port 3000:  
-    `yarn frontend start`  
-    TODO some more steps
+    `yarn frontend start`
 
 ## Screenshots
 
