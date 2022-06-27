@@ -1,35 +1,16 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { Card, CreateAssetModal, TransferModal } from "../components";
-import { createAsset, getAssets, transferAsset } from "../repos";
-import { Asset, Transfer } from "../Types";
+import {
+  createAsset,
+  getAssets,
+  holdAsset,
+  releaseAsset,
+  transferAsset,
+} from "../repos";
+import { Asset, GetAsset, Transfer } from "../Types";
 
 const List: FC = () => {
-  // TODO replace mock data with actual data from api
-  const mock = [
-    {
-      id: "Asset1",
-      area: 1500,
-      location: "1 Apple Parkway",
-      owner: "Jainam",
-      status: "Registered",
-    },
-    {
-      id: "Asset2",
-      area: 456,
-      location: "1 Hacker Way",
-      owner: "",
-      status: "Not Registered",
-    },
-    {
-      id: "Asset3",
-      area: 55,
-      location: "33 Bel Road",
-      owner: "Alex",
-      status: "Locked",
-    },
-  ];
-
-  const [assets, setAssets] = useState<Asset[]>(mock);
+  const [assets, setAssets] = useState<GetAsset[]>();
   const [createModal, setCreateModal] = useState<boolean>(false);
   const [transferModal, setTransferModal] = useState<string>();
 
@@ -42,7 +23,7 @@ const List: FC = () => {
       const data = await getAssets();
       setAssets(data);
     } catch (error) {
-      console.error(error);
+      alert(await error.response.json());
     }
   }, []);
 
@@ -53,8 +34,9 @@ const List: FC = () => {
   const onCreateAsset = useCallback(async (data: Asset) => {
     try {
       await createAsset(data);
+      fetchData();
     } catch (error) {
-      console.error(error);
+      alert(await error.response.json());
     }
     onCreateClose();
   }, []);
@@ -66,10 +48,29 @@ const List: FC = () => {
   const onTransferAsset = useCallback(async (data: Transfer) => {
     try {
       await transferAsset(data);
+      fetchData();
     } catch (error) {
-      console.error(error);
+      alert(await error.response.json());
     }
     onTransferClose();
+  }, []);
+
+  const onHold = useCallback(async (id: string) => {
+    try {
+      await holdAsset(id);
+      fetchData();
+    } catch (error) {
+      alert(await error.response.json());
+    }
+  }, []);
+
+  const onRelease = useCallback(async (id: string) => {
+    try {
+      await releaseAsset(id);
+      fetchData();
+    } catch (error) {
+      alert(await error.response.json());
+    }
   }, []);
 
   return (
@@ -86,7 +87,7 @@ const List: FC = () => {
       />
       <section className="flex-initial">
         <iframe
-          className="h-full xl:min-w-[30rem] lg:min-w-[25rem] md:min-w-[20rem]"
+          className="h-full max-h-screen xl:min-w-[30rem] lg:min-w-[25rem] md:min-w-[20rem]"
           src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d5613.513741277526!2d-79.41348504077459!3d43.67592552614158!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sca!4v1655441998679!5m2!1sen!2sca"
           width="100%"
           height="100%"
@@ -109,14 +110,22 @@ const List: FC = () => {
           </button>
         </div>
 
-        <div className="flex flex-col gap-4">
-          {assets.map((asset) => (
-            <Card
-              key={asset.id}
-              {...asset}
-              onClick={() => setTransferModal(asset.id)}
-            />
-          ))}
+        <div className="flex flex-col gap-4 h-full overflow-y-auto max-h-screen">
+          {assets && assets.length > 0 ? (
+            assets.map((asset) => (
+              <Card
+                key={asset.Key}
+                {...asset.Record}
+                onTransfer={() => setTransferModal(asset.Key)}
+                onHold={() => onHold(asset.Key)}
+                onRelease={() => onRelease(asset.Key)}
+              />
+            ))
+          ) : (
+            <h2 className="p-4 mt-4">
+              No assets registered. Please create a new asset.
+            </h2>
+          )}
         </div>
       </section>
     </div>

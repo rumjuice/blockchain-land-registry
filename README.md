@@ -55,36 +55,42 @@ Owner - can transfer assets (that belong to them) to another owner.
 
 ## Prerequisites
 
-1) Ubuntu-18.0(8GB RAM and 10+ GB disk storage)
-2) Docker
-3) Node
-4) Yarn
-
+1. Ubuntu-18.0(8GB RAM and 10+ GB disk storage)
+2. Docker
+3. Node
+4. Yarn
 
 ## Step by step setup instructions
-1) Install docker if not installed
-2) Pull this repository from GitHub
-3) Go to apps folder and run to avoid permission related problems:   
-```sudo chmod -R 777 fabric-network```
-4) Go to apps/fabric-network and run to pull fabric images from docker hub:    
-```./pullFabricImages.sh```
-5) Go to apps/fabric-network/test-network and run to build network up:   
-```./network.sh down```   
-```./network.sh up createChannel -ca -s couchdb```
 
-6) From the same location run to deploy the chaincode:   
-```./network.sh deployCC -ccn basic -ccp ../../chaincode/ -ccl javascript```
-7) Go to project root folder and run to install all dependencies for frontend and backend:  
-```yarn install```
-8) From project root folder run following to start backend applicaiton at port 8080:   
-```yarn backend start```
-9) From project root folder run following to start backend applicaiton at port 3000:   
-```yarn frontend start```  
-TODO some more steps
+1. Install docker if not installed
+2. Pull this repository from GitHub
+3. Go to apps folder and run to avoid permission related problems:  
+   `sudo chmod -R +x fabric-network`
+4. Go to apps/fabric-network and run to pull fabric images from docker hub:  
+   `./pullFabricImages.sh`
+5. Go to apps/fabric-network/test-network and run to build network up:  
+   `./network.sh down`  
+   `./network.sh up createChannel -ca -s couchdb`
 
+6. From the same location run to deploy the chaincode:  
+   `./network.sh deployCC -ccn basic -ccp ../../chaincode/ -ccl javascript`
+7. Go to project root folder and run the whole app with:
+   `yarn start`  
+   _OR_
+8. Go to project root folder and run to install all dependencies for frontend and backend:  
+   `yarn install`
+9. From project root folder run following to start backend application at port 8080:  
+   `yarn backend start`
+10. From project root folder run following to start backend application at port 3000:  
+    `yarn frontend start`  
+    TODO some more steps
 
 ## Screenshots
 
-TODO
+![Home Empty](assets/sc-4.png)
 
+![Home](assets/sc-3.png)
 
+![Create Asset Form](assets/sc-2.png)
+
+![Transfer Asset Form](assets/sc-1.png)

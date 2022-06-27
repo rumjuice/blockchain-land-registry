@@ -1,104 +1,80 @@
+import { v4 as uuid } from "uuid";
 import {
   evaluateTransaction,
-  submitTransaction
+  submitTransaction,
 } from "./Hyperledger.service.js";
 
 /**
- * Get all accounts.
+ * Get all assets.
  *
  * @returns
  */
 async function get() {
   try {
     const assets = await evaluateTransaction("GetAllAssets");
-    return assets;
-  }
-  catch (error) {
-    return "Assets not found";
+    return JSON.parse(assets);
+  } catch (error) {
+    throw new Error(error);
   }
 }
 
+/**
+ * Get asset detail by id.
+ *
+ * @param id
+ * @returns
+ */
 async function getById(id) {
   try {
     const asset = await evaluateTransaction("ReadAsset", id);
-    return JSON.parse(asset)
-  }
-  catch (error) {
-    console.log(error)
-    return "Asset not found";
+    return JSON.parse(asset);
+  } catch (error) {
+    throw new Error(error);
   }
 }
 
 /**
  * Create new asset.
  *
- * @param name
+ * @param assetObject
  * @returns
  */
 async function create(assetObject) {
   try {
-    // TODO change with params from frontend
-    console.log(assetObject);
-    await submitTransaction(
-      "CreateAsset",
-      [
-        assetObject.assetId,
-        assetObject.area,
-        assetObject.location,
-        assetObject.owner,
-        assetObject.status
-      ]
-    );
+    const id = uuid();
 
-    const result = await evaluateTransaction("ReadAsset", assetObject.assetId);
+    await submitTransaction("CreateAsset", [
+      id,
+      assetObject.area,
+      assetObject.location,
+      assetObject.owner,
+      assetObject.status,
+    ]);
+
+    const result = await evaluateTransaction("ReadAsset", id);
 
     return JSON.parse(result);
   } catch (error) {
-    console.log(error)
-    return error;
+    throw new Error(error);
   }
 }
-
-
-//chaincode need an update functionality
-// /**
-//  * Update asset.
-//  *
-//  * @param name
-//  * @returns
-//  */
-// async function update() {
-//   try {
-//     // TODO change with params from frontend
-//     await submitTransaction(
-//       "UpdateAsset",
-//       "asset13",
-//       "yellow",
-//       "5",
-//       "Tom",
-//       "1300",
-//     );
-//     const result = await contract.evaluateTransaction("ReadAsset", "asset13");
-
-//     return result;
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// }
 
 /**
  * Transfer asset.
  *
- * @param name
+ * @param transferObject
  * @returns
  */
 async function transfer(transferObject) {
   try {
-    // TODO change with params from frontend
-    await submitTransaction("TransferAsset", transferObject.id, transferObject.owner);
-    const result = await contract.evaluateTransaction("ReadAsset", id);
+    await submitTransaction("TransferAsset", [
+      transferObject.id,
+      transferObject.owner,
+    ]);
 
-    return result;
+    const result = await evaluateTransaction("ReadAsset", transferObject.id);
+
+    return JSON.parse(result);
   } catch (error) {
     throw new Error(error);
   }
@@ -107,16 +83,15 @@ async function transfer(transferObject) {
 /**
  * hold asset.
  *
- * @param name
+ * @param id
  * @returns
  */
- async function hold(holdData) {
+async function hold(id) {
   try {
-    // TODO change with params from frontend
-    await submitTransaction("HoldAsset", holdData.id);
-    const result = await contract.evaluateTransaction("ReadAsset", holdData.id);
+    await submitTransaction("HoldAsset", [id]);
+    const result = await evaluateTransaction("ReadAsset", id);
 
-    return result;
+    return JSON.parse(result);
   } catch (error) {
     throw new Error(error);
   }
@@ -125,25 +100,18 @@ async function transfer(transferObject) {
 /**
  * Unhold asset.
  *
- * @param name
+ * @param id
  * @returns
  */
- async function unhold(unholdData) {
+async function unhold(id) {
   try {
-    // TODO change with params from frontend
-    await submitTransaction("UnHoldAsset", unholdData.id);
-    const result = await contract.evaluateTransaction("ReadAsset", unholdData.id);
+    await submitTransaction("UnHoldAsset", [id]);
+    const result = await evaluateTransaction("ReadAsset", id);
 
-    return result;
+    return JSON.parse(result);
   } catch (error) {
     throw new Error(error);
   }
-}
-
-
-
-function prettyJSONString(inputString) {
-  return JSON.stringify(JSON.parse(inputString), null, 2);
 }
 
 export default {
@@ -151,4 +119,6 @@ export default {
   getById,
   create,
   transfer,
+  hold,
+  unhold,
 };

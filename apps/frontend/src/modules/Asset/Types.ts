@@ -1,14 +1,18 @@
 export enum AssetStatus {
-  NOT_REGISTERED = "Not Registered",
-  REGISTERED = "Registered",
-  LOCKED = "Locked",
+  NOT_REGISTERED = "unregistered",
+  REGISTERED = "registered",
+  LOCKED = "hold",
 }
 export type Asset = {
-  id: string;
-  area: number;
+  assetID: string;
+  area: string;
   location: string;
   owner: string;
   status: AssetStatus | string;
+};
+export type GetAsset = {
+  Key: string;
+  Record: Asset;
 };
 export type Transfer = {
   id: string;
