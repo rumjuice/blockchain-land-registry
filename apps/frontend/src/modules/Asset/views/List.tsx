@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { Card, CreateAssetModal, TransferModal } from "../components";
-import { createAsset, getAssets, transferAsset } from "../repos";
+import { createAsset, getAssets, holdAsset, transferAsset } from "../repos";
 import { Asset, GetAsset, Transfer } from "../Types";
 
 const List: FC = () => {
@@ -49,6 +49,15 @@ const List: FC = () => {
     onTransferClose();
   }, []);
 
+  const onHold = useCallback(async (id: string) => {
+    try {
+      await holdAsset(id);
+      fetchData();
+    } catch (error) {
+      alert(await error.response.json());
+    }
+  }, []);
+
   return (
     <div className="flex w-full h-full mt-8 gap-4">
       <CreateAssetModal
@@ -92,12 +101,14 @@ const List: FC = () => {
               <Card
                 key={asset.Key}
                 {...asset.Record}
-                onClick={() => setTransferModal(asset.Key)}
+                onTransfer={() => setTransferModal(asset.Key)}
+                onHold={() => onHold(asset.Key)}
+                onRelease={() => null}
               />
             ))
           ) : (
             <h2 className="p-4 mt-4">
-              No assets registered. Please create new asset.
+              No assets registered. Please create a new asset.
             </h2>
           )}
         </div>

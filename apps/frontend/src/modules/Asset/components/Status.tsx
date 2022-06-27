@@ -14,7 +14,7 @@ const Status: FC<Props> = ({ status }) => {
           <>
             <HomeIcon className="stroke-green-600" />
             <span className="text-green-600 font-semibold text-center leading-4 text-sm">
-              {AssetStatus.REGISTERED}
+              {AssetStatus.REGISTERED.toUpperCase()}
             </span>
           </>
         );
@@ -24,7 +24,7 @@ const Status: FC<Props> = ({ status }) => {
           <>
             <HomeIcon className="stroke-slate-600" />
             <span className="text-slate-600 font-semibold text-center leading-4 text-sm">
-              {AssetStatus.NOT_REGISTERED}
+              {AssetStatus.NOT_REGISTERED.toUpperCase()}
             </span>
           </>
         );
@@ -34,7 +34,7 @@ const Status: FC<Props> = ({ status }) => {
           <>
             <HomeIcon className="stroke-red-600" />
             <span className="text-red-600 font-semibold text-center leading-4 text-sm">
-              {AssetStatus.LOCKED}
+              {AssetStatus.LOCKED.toUpperCase()}
             </span>
           </>
         );

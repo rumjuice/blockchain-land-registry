@@ -11,7 +11,7 @@ const path = {
   assets: "/assets",
   asset: "/assets/:assetId",
   transfer: "/transfer",
-  hold: "/hold",
+  hold: "/hold/:assetId",
   unhold: "/unhold",
 };
 
@@ -68,8 +68,15 @@ router.post(path.transfer, async (req, res) => {
  * Hold
  */
 router.post(path.hold, async (req, res) => {
-  const assets = await AssetService.transfer(req.body);
-  return res.status(OK).json(assets);
+  if (!req.params.assetId)
+    return res.status(BAD_REQUEST).json("Asset ID is required!");
+
+  try {
+    const tx = await AssetService.hold(req.params.assetId);
+    return res.status(OK).json(tx);
+  } catch (error) {
+    return res.status(INTERNAL_SERVER_ERROR).json(error);
+  }
 });
 
 /**

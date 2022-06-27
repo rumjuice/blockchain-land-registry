@@ -62,7 +62,7 @@ async function create(assetObject) {
 /**
  * Transfer asset.
  *
- * @param name
+ * @param transferObject
  * @returns
  */
 async function transfer(transferObject) {
@@ -83,16 +83,15 @@ async function transfer(transferObject) {
 /**
  * hold asset.
  *
- * @param name
+ * @param id
  * @returns
  */
-async function hold(holdData) {
+async function hold(id) {
   try {
-    // TODO change with params from frontend
-    await submitTransaction("HoldAsset", holdData.id);
-    const result = await evaluateTransaction("ReadAsset", holdData.id);
+    await submitTransaction("HoldAsset", [id]);
+    const result = await evaluateTransaction("ReadAsset", id);
 
-    return result;
+    return JSON.parse(result);
   } catch (error) {
     throw new Error(error);
   }
@@ -121,4 +120,5 @@ export default {
   getById,
   create,
   transfer,
+  hold,
 };
