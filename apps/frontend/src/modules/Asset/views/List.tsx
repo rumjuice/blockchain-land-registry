@@ -17,7 +17,7 @@ const List: FC = () => {
       const data = await getAssets();
       setAssets(data);
     } catch (error) {
-      alert(error);
+      alert(await error.response.json());
     }
   }, []);
 
@@ -30,7 +30,7 @@ const List: FC = () => {
       await createAsset(data);
       fetchData();
     } catch (error) {
-      alert(error);
+      alert(await error.response.json());
     }
     onCreateClose();
   }, []);
@@ -43,7 +43,7 @@ const List: FC = () => {
     try {
       await transferAsset(data);
     } catch (error) {
-      alert(error);
+      alert(await error.response.json());
     }
     onTransferClose();
   }, []);
@@ -62,7 +62,7 @@ const List: FC = () => {
       />
       <section className="flex-initial">
         <iframe
-          className="h-full xl:min-w-[30rem] lg:min-w-[25rem] md:min-w-[20rem]"
+          className="h-full max-h-screen xl:min-w-[30rem] lg:min-w-[25rem] md:min-w-[20rem]"
           src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d5613.513741277526!2d-79.41348504077459!3d43.67592552614158!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sca!4v1655441998679!5m2!1sen!2sca"
           width="100%"
           height="100%"
@@ -85,7 +85,7 @@ const List: FC = () => {
           </button>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 h-full overflow-y-auto max-h-screen">
           {assets && assets.length > 0 ? (
             assets.map((asset) => (
               <Card

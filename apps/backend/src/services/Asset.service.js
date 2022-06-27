@@ -41,7 +41,6 @@ async function getById(id) {
  */
 async function create(assetObject) {
   try {
-    // TODO change with params from frontend
     const id = uuid();
 
     await submitTransaction("CreateAsset", [
@@ -56,37 +55,9 @@ async function create(assetObject) {
 
     return JSON.parse(result);
   } catch (error) {
-    console.log(error);
-    return error;
+    throw new Error(error);
   }
 }
-
-
-//chaincode need an update functionality
-// /**
-//  * Update asset.
-//  *
-//  * @param name
-//  * @returns
-//  */
-// async function update() {
-//   try {
-//     // TODO change with params from frontend
-//     await submitTransaction(
-//       "UpdateAsset",
-//       "asset13",
-//       "yellow",
-//       "5",
-//       "Tom",
-//       "1300",
-//     );
-//     const result = await contract.evaluateTransaction("ReadAsset", "asset13");
-
-//     return result;
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// }
 
 /**
  * Transfer asset.
@@ -97,7 +68,11 @@ async function create(assetObject) {
 async function transfer(transferObject) {
   try {
     // TODO change with params from frontend
-    await submitTransaction("TransferAsset", transferObject.id, transferObject.owner);
+    await submitTransaction(
+      "TransferAsset",
+      transferObject.id,
+      transferObject.owner,
+    );
     const result = await contract.evaluateTransaction("ReadAsset", id);
 
     return result;
@@ -112,7 +87,7 @@ async function transfer(transferObject) {
  * @param name
  * @returns
  */
- async function hold(holdData) {
+async function hold(holdData) {
   try {
     // TODO change with params from frontend
     await submitTransaction("HoldAsset", holdData.id);
@@ -130,22 +105,19 @@ async function transfer(transferObject) {
  * @param name
  * @returns
  */
- async function unhold(unholdData) {
+async function unhold(unholdData) {
   try {
     // TODO change with params from frontend
     await submitTransaction("UnHoldAsset", unholdData.id);
-    const result = await contract.evaluateTransaction("ReadAsset", unholdData.id);
+    const result = await contract.evaluateTransaction(
+      "ReadAsset",
+      unholdData.id,
+    );
 
     return result;
   } catch (error) {
     throw new Error(error);
   }
-}
-
-
-
-function prettyJSONString(inputString) {
-  return JSON.stringify(JSON.parse(inputString), null, 2);
 }
 
 export default {
