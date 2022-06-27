@@ -87,4 +87,10 @@ Owner - can transfer assets (that belong to them) to another owner.
 
 ## Screenshots
 
-TODO
+![Home Empty](assets/sc-4.png)
+
+![Home](assets/sc-3.png)
+
+![Create Asset Form](assets/sc-2.png)
+
+![Transfer Asset Form](assets/sc-1.png)

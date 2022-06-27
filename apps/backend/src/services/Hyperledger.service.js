@@ -51,7 +51,6 @@ async function init() {
 
     console.log("Fabric initialized successfully!");
   } catch (error) {
-    console.log(error);
     throw new Error("Failed to initialize fabric", error);
   }
 }
