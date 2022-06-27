@@ -100,16 +100,15 @@ async function hold(id) {
 /**
  * Unhold asset.
  *
- * @param name
+ * @param id
  * @returns
  */
-async function unhold(unholdData) {
+async function unhold(id) {
   try {
-    // TODO change with params from frontend
-    await submitTransaction("UnHoldAsset", unholdData.id);
-    const result = await evaluateTransaction("ReadAsset", unholdData.id);
+    await submitTransaction("UnHoldAsset", [id]);
+    const result = await evaluateTransaction("ReadAsset", id);
 
-    return result;
+    return JSON.parse(result);
   } catch (error) {
     throw new Error(error);
   }
@@ -121,4 +120,5 @@ export default {
   create,
   transfer,
   hold,
+  unhold,
 };

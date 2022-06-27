@@ -1,6 +1,12 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { Card, CreateAssetModal, TransferModal } from "../components";
-import { createAsset, getAssets, holdAsset, transferAsset } from "../repos";
+import {
+  createAsset,
+  getAssets,
+  holdAsset,
+  releaseAsset,
+  transferAsset,
+} from "../repos";
 import { Asset, GetAsset, Transfer } from "../Types";
 
 const List: FC = () => {
@@ -58,6 +64,15 @@ const List: FC = () => {
     }
   }, []);
 
+  const onRelease = useCallback(async (id: string) => {
+    try {
+      await releaseAsset(id);
+      fetchData();
+    } catch (error) {
+      alert(await error.response.json());
+    }
+  }, []);
+
   return (
     <div className="flex w-full h-full mt-8 gap-4">
       <CreateAssetModal
@@ -103,7 +118,7 @@ const List: FC = () => {
                 {...asset.Record}
                 onTransfer={() => setTransferModal(asset.Key)}
                 onHold={() => onHold(asset.Key)}
-                onRelease={() => null}
+                onRelease={() => onRelease(asset.Key)}
               />
             ))
           ) : (

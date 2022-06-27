@@ -12,7 +12,7 @@ const path = {
   asset: "/assets/:assetId",
   transfer: "/transfer",
   hold: "/hold/:assetId",
-  unhold: "/unhold",
+  unhold: "/unhold/:assetId",
 };
 
 /**
@@ -83,8 +83,15 @@ router.post(path.hold, async (req, res) => {
  * Unhold
  */
 router.post(path.unhold, async (req, res) => {
-  const assets = await AssetService.transfer(req.body);
-  return res.status(OK).json(assets);
+  if (!req.params.assetId)
+    return res.status(BAD_REQUEST).json("Asset ID is required!");
+
+  try {
+    const tx = await AssetService.unhold(req.params.assetId);
+    return res.status(OK).json(tx);
+  } catch (error) {
+    return res.status(INTERNAL_SERVER_ERROR).json(error);
+  }
 });
 
 export default router;
